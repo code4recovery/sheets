@@ -30,7 +30,7 @@ Route::get('oiaa', function () {
         return compact('name', 'times', 'timezone', 'url', 'phone', 'access_code', 'email', 'types', 'formats', 'notes');
     }, $rows);
 
-    Storage::put('oiaa.json', json_encode($rows), 'public');
+    Storage::disk('public')->put('oiaa.json', json_encode($rows));
 
     return 'done!';
 });
