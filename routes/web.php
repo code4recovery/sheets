@@ -24,8 +24,14 @@ Route::get('oiaa', function () {
     }, array_shift($rows));
     $column_count = count($columns);
 
+    //remove empty rows
+    $rows = array_filter($rows, function ($row) {
+        return strlen($row[0]);
+    });
+
     //loop through and format rows
     $rows = array_map(function ($row) use ($columns, $column_count) {
+        $row = array_map('trim', $row);
         extract(array_combine($columns, array_pad($row, $column_count, null)));
         return compact('name', 'times', 'timezone', 'url', 'phone', 'access_code', 'email', 'types', 'formats', 'notes');
     }, $rows);
