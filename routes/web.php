@@ -1,13 +1,50 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\User;
+use App\Http\Controllers\FeedController;
+
 
 Route::get('/', function () {
+    if (Auth::check()) {
+        return view('home', ['user' => Auth::user()]);
+    }
     return view('welcome');
 });
+
+Route::resource('feeds', FeedController::class);
+
+Route::get('/auth/redirect', function () {
+    return Socialite::driver('google')->redirect();
+});
+
+Route::get('/auth/callback', function () {
+
+    //todo what if this fails
+    $profile = Socialite::driver('google')->user();
+
+    //create or update user info
+    $user = User::firstOrNew(['email' => $profile->email]);
+    $user->name = $profile->name;
+    $user->avatar = $profile->avatar;
+    $user->locale = $profile->user['locale'];
+    $user->google_id = $profile->id;
+    $user->token = $profile->token;
+    //$profile->refreshToken,
+    //$profile->expiresIn,
+    $user->save();
+
+    //log user in
+    Auth::login($user);
+
+    return redirect('/');
+});
+
 
 Route::get('oiaa', function () {
 
