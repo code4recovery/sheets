@@ -107,7 +107,9 @@ Route::get('aasanjose', function () {
         'conference_phone',
         'conference_phone_notes',
         'slug',
-        'updated'
+        'updated',
+        'latitude',
+        'longitude'
     ];
 
     $types = array_flip([
@@ -221,8 +223,16 @@ Route::get('aasanjose', function () {
             }, $row['types']);
         }
 
-        $keys = array_filter(array_keys($row), function ($key)  use ($row) {
-            return $row[$key] !== '';
+        if ($row['latitude']) {
+            $row['latitude'] = floatval($row['latitude']);
+        }
+
+        if ($row['longitude']) {
+            $row['longitude'] = floatval($row['longitude']);
+        }
+
+        $keys = array_filter(array_keys($row), function ($key)  use ($row, $fields) {
+            return in_array($key, $fields) && $row[$key] !== '';
         });
 
         return array_intersect_key($row, array_flip($keys));
