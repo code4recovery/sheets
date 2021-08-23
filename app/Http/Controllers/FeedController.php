@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Feed;
+use App\Models\User;
 use DateTime;
 
 class FeedController extends Controller
@@ -20,7 +21,6 @@ class FeedController extends Controller
     public function index()
     {
         return view('feeds.index', [
-            'feeds' => Feed::all(),
             'user' => Auth::user()
         ]);
     }
@@ -79,6 +79,10 @@ class FeedController extends Controller
         //wait for success to create entry
         $feed->save();
 
+        //save relationship
+        $user = User::find(Auth::id());
+        $feed->users()->save($user);
+
         return redirect()->route('feeds.show', $feed->slug)->with('success', 'Feed created.');
     }
 
@@ -118,6 +122,10 @@ class FeedController extends Controller
     {
         $feed = Feed::where(['slug' => $slug])->first();
 
+        if (!$feed->canEdit()) {
+            return redirect()->route('feeds.index');
+        }
+
         return view('feeds.edit', [
             'user' => Auth::user(),
             'timezones' => self::timezones(),
@@ -148,6 +156,11 @@ class FeedController extends Controller
 
         //update entry
         $feed = Feed::where(['slug' => $slug])->first();
+
+        if (!$feed->canEdit()) {
+            return redirect()->route('feeds.index');
+        }
+
         $feed->name = $request->name;
 
         //changing slug? move feed
@@ -177,12 +190,22 @@ class FeedController extends Controller
     public function destroy($slug)
     {
         $feed = Feed::where(['slug' => $slug])->first();
+
+        if (!$feed->canEdit()) {
+            return redirect()->route('feeds.index');
+        }
+
         $feed->delete();
     }
 
     public static function refresh($slug)
     {
         $feed = Feed::where(['slug' => $slug])->first();
+
+        if (!$feed->canEdit()) {
+            return redirect()->route('feeds.index');
+        }
+
         $json = self::generate($feed->spreadsheet_id, $feed->slug);
         if ($json['status'] === 'error') {
             return redirect()->back()->with('error', 'Could not fetch data! The sheet permissions should be set to "anyone with the link can view."');
