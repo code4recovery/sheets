@@ -27,6 +27,10 @@ class CreateFeedsTable extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->integer('meetings')->default(0);
+            $table->string('spreadsheet_id');
+            $table->string('sheet_id');
+            $table->string('timezone');
+            $table->string('website');
             $table->timestamp('refreshed_at')->nullable();
             $table->timestamps();
         });
