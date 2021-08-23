@@ -1,19 +1,18 @@
 <?php
 
+use App\Http\Controllers\FeedController;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
-use App\Models\User;
-use App\Http\Controllers\FeedController;
-use Illuminate\Http\Request;
-
 
 Route::get('/', function () {
     return Auth::check() ?
-        redirect()->action([FeedController::class, 'index']) :
+        redirect()->route('feeds.index') :
         view('welcome');
 })->name('login');
 
@@ -28,6 +27,7 @@ Route::middleware('auth')->prefix('feeds')->name('feeds.')->group(function () {
     Route::get('/{slug}/refresh', [FeedController::class, 'refresh'])->name('refresh');
 });
 
+//todo move ot the API
 Route::post('publish', function (Request $request) {
     $filename = Str::slug($request->name);
     FeedController::generate($request->id, $filename);
@@ -59,9 +59,15 @@ Route::get('/auth/callback', function () {
     //log user in
     Auth::login($user);
 
-    return redirect()->action([FeedController::class, 'index']);
+    return redirect()->route('feeds.index');
 });
 
+Route::get('/logout', function (Request $request) {
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/');
+});
 
 Route::get('oiaa', function () {
 
@@ -92,10 +98,5 @@ Route::get('oiaa', function () {
 
     Storage::disk('public')->put('oiaa.json', json_encode($rows));
 
-    return 'done!';
-});
-
-Route::get('aasanjose', function () {
-    FeedController::generate('12Ga8uwMG4WJ8pZ_SEU7vNETp_aQZ-2yNVsYDFqIwHyE', 'aasanjose');
     return 'done!';
 });

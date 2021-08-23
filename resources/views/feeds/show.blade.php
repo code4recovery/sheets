@@ -42,13 +42,17 @@
                 </div>
                 <div class="sm:col-span-1">
                     <dt class="text-sm font-medium text-gray-500">
-                        Feed Address
+                        Resources
                     </dt>
                     <dd class="mt-1 text-sm text-gray-900">
+                        <a href="{{ 'https://docs.google.com/spreadsheets/d/' . $feed->spreadsheet_id . '/edit#gid=' . $feed->sheet_id }}"
+                            target="_blank" class="text-indigo-500 underline hover:text-indigo-900">Sheet</a>
+                        • 
                         <a href="{{ $feed_url }}" target="_blank"
-                            class="text-indigo-500 underline hover:text-indigo-900">
-                            {{ $feed_url }}
-                        </a>
+                            class="text-indigo-500 underline hover:text-indigo-900">Feed</a>
+                        • 
+                        <a href="{{ 'https://pdf.code4recovery.org/?json=' . $feed_url }}" target="_blank"
+                            class="text-indigo-500 underline hover:text-indigo-900">PDF</a>
                     </dd>
                 </div>
                 <div class="sm:col-span-1">
@@ -80,13 +84,7 @@
                     </dd>
                 </div>
                 <div class="sm:col-span-1">
-                    <dt class="text-sm font-medium text-gray-500">
-                        Last Refresh
-                    </dt>
-                    <dd class="mt-1 text-sm text-gray-900">
-                        <a href="{{ 'https://pdf.code4recovery.org/?json=' . $feed_url }}" target="_blank"
-                            class="text-indigo-500 underline hover:text-indigo-900">Generate PDF</a>
-                    </dd>
+
                 </div>
                 <div class=" sm:col-span-2">
                     <dt class="text-sm font-medium text-gray-500">

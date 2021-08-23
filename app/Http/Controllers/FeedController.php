@@ -92,15 +92,18 @@ class FeedController extends Controller
     {
         $feed = Feed::where(['slug' => $slug])->first();
 
+        $feed_url = env('APP_URL') . '/storage/' . $feed->slug . '.json';
+
         return view('feeds.show', [
             'user' => Auth::user(),
             'feed' => $feed,
-            'feed_url' => env('APP_URL') . '/storage/' . $feed->slug . '.json',
+            'feed_url' => $feed_url,
             'embed_code' => implode("\n", [
-                '<script src="https://react.meetingguide.org/"></script>',
                 '<div id="tsml-ui"',
-                'data-timezone="' . $feed->timezone . '"',
-                '></div>'
+                '  data-src="' . $feed_url . '"',
+                '  data-timezone="' . $feed->timezone . '"',
+                '></div>',
+                '<script src="https://react.meetingguide.org/"></script>',
             ]),
         ]);
     }
