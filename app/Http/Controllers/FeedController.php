@@ -32,17 +32,9 @@ class FeedController extends Controller
      */
     public function create()
     {
-        //get list of timezones with common ones grouped at the top
-        $n_america_tz = ['America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles'];
-        $world_tz = array_diff(timezone_identifiers_list(), $n_america_tz);
-        $timezones = [
-            'North America' => array_combine($n_america_tz, $n_america_tz),
-            'World' => array_combine($world_tz, $world_tz),
-        ];
-
         return view('feeds.create', [
             'user' => Auth::user(),
-            'timezones' => $timezones,
+            'timezones' => self::timezones(),
         ]);
     }
 
@@ -73,7 +65,7 @@ class FeedController extends Controller
         $feed->timezone = $request->timezone;
         $feed->website = $request->website;
         $feed->spreadsheet_id = $parts[5];
-        $feed->sheet_id = substr($parts[6], 8);
+        $feed->sheet_id = substr($parts[6], 9);
 
         //fetch data
         $json = self::generate($feed->spreadsheet_id, $feed->slug);
@@ -87,18 +79,30 @@ class FeedController extends Controller
         //wait for success to create entry
         $feed->save();
 
-        return redirect()->route('feeds.index')->with('success', 'Feed created.');
+        return redirect()->route('feeds.show', $feed->slug)->with('success', 'Feed created.');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($slug)
     {
-        //
+        $feed = Feed::where(['slug' => $slug])->first();
+
+        return view('feeds.show', [
+            'user' => Auth::user(),
+            'feed' => $feed,
+            'feed_url' => env('APP_URL') . '/storage/' . $feed->slug . '.json',
+            'embed_code' => implode("\n", [
+                '<script src="https://react.meetingguide.org/"></script>',
+                '<div id="tsml-ui"',
+                'data-timezone="' . $feed->timezone . '"',
+                '></div>'
+            ]),
+        ]);
     }
 
     /**
@@ -107,9 +111,15 @@ class FeedController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($slug)
     {
-        //
+        $feed = Feed::where(['slug' => $slug])->first();
+
+        return view('feeds.edit', [
+            'user' => Auth::user(),
+            'timezones' => self::timezones(),
+            'feed' => $feed,
+        ]);
     }
 
     /**
@@ -119,9 +129,40 @@ class FeedController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $slug)
     {
-        //
+        //examine sheet URL
+        $parts = explode('/', $request->sheet);
+        if (
+            count($parts) !== 7
+            || $parts[2] !== 'docs.google.com'
+            || $parts[3] !== 'spreadsheets'
+            || $parts[4] !== 'd'
+            || !Str::startsWith($parts[6], 'edit#gid=')
+        ) {
+            return redirect()->back()->withInput()->with('error', 'Sheet URL does not look right!');
+        }
+
+        //update entry
+        $feed = Feed::where(['slug' => $slug])->first();
+        $feed->name = $request->name;
+
+        //changing slug? move feed
+        $slug = Str::slug($request->slug);
+        if ($feed->slug !== $slug) {
+            if (Storage::disk('public')->exists($feed->slug . '.json') && !Storage::disk('public')->exists($slug . '.json')) {
+                Storage::disk('public')->move($feed->slug . '.json', $slug . '.json');
+                $feed->slug = $slug;
+            }
+        }
+
+        $feed->timezone = $request->timezone;
+        $feed->website = $request->website;
+        $feed->spreadsheet_id = $parts[5];
+        $feed->sheet_id = substr($parts[6], 9);
+        $feed->save();
+
+        return redirect()->route('feeds.show', $feed->slug)->with('success', 'Feed updated.');
     }
 
     /**
@@ -130,14 +171,15 @@ class FeedController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($slug)
     {
-        //
+        $feed = Feed::where(['slug' => $slug])->first();
+        $feed->delete();
     }
 
-    public static function refresh($feed_id)
+    public static function refresh($slug)
     {
-        $feed = Feed::find($feed_id);
+        $feed = Feed::where(['slug' => $slug])->first();
         $json = self::generate($feed->spreadsheet_id, $feed->slug);
         if ($json['status'] === 'error') {
             return redirect()->back()->with('error', 'Could not fetch data! The sheet permissions should be set to "anyone with the link can view."');
@@ -146,6 +188,17 @@ class FeedController extends Controller
         $feed->meetings = $json['count'];
         $feed->save();
         return redirect()->back()->with('success', 'Feed refreshed.');
+    }
+
+    static function timezones()
+    {
+        //get list of timezones with common ones grouped at the top
+        $n_america_tz = ['America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles'];
+        $world_tz = array_diff(timezone_identifiers_list(), $n_america_tz);
+        return [
+            'North America' => array_combine($n_america_tz, $n_america_tz),
+            'World' => array_combine($world_tz, $world_tz),
+        ];
     }
 
     public static function generate($spreadsheet_id, $slug)
