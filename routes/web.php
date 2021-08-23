@@ -17,9 +17,16 @@ Route::get('/', function () {
         view('welcome');
 })->name('login');
 
-Route::resource('feeds', FeedController::class)->middleware('auth');
-
-Route::get('/feeds/{id}/refresh', [FeedController::class, 'refresh'])->name('feeds.refresh');
+Route::middleware('auth')->prefix('feeds')->name('feeds.')->group(function () {
+    Route::get('/', [FeedController::class, 'index'])->name('index');
+    Route::get('/create', [FeedController::class, 'create'])->name('create');
+    Route::post('/', [FeedController::class, 'store'])->name('store');
+    Route::get('/{slug}', [FeedController::class, 'show'])->name('show');
+    Route::get('/{slug}/edit', [FeedController::class, 'edit'])->name('edit');
+    Route::put('/{slug}', [FeedController::class, 'update'])->name('update');
+    Route::delete('/{slug}', [FeedController::class, 'destroy'])->name('destroy');
+    Route::get('/{slug}/refresh', [FeedController::class, 'refresh'])->name('refresh');
+});
 
 Route::post('publish', function (Request $request) {
     $filename = Str::slug($request->name);
