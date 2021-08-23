@@ -22,9 +22,12 @@ Benefits of this system are:
 -   [x] Logging in with Google OAUTH
 -   [x] Create / edit feed listings
 -   [x] Refresh feeds
--   [ ] Security to restrict editing to feed owners
+-   [x] Security to restrict editing to feed owners
 -   [ ] Mobile view
--   [ ] Log of import errors (duplicate slugs, invalid types)
+-   [ ] Log of import errors (e.g. duplicate slugs, invalid types)
 -   [ ] Publish JSON from the add-on
 -   [ ] Publish the add-on to the Google Workspace Marketplace
 -   [ ] Transfer feed ownership
+-   [ ] Localize in French and Spanish
+-   [ ] Authenticate and send to intended URL
+-   [ ] Ability to view un-owned feeds?

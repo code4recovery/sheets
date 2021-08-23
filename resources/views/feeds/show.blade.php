@@ -7,10 +7,12 @@
             <h1 class="text-3xl font-bold leading-tight text-gray-900">
                 {{ $feed->name }}
             </h1>
-            <a href="{{ route('feeds.edit', $feed->slug) }}"
-                class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Edit Feed
-            </a>
+            @if ($feed->canEdit())
+                <a href="{{ route('feeds.edit', $feed->slug) }}"
+                    class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Edit Feed
+                </a>
+            @endif
         </div>
     </header>
     <main>
@@ -77,10 +79,12 @@
                     </dt>
                     <dd class="mt-1 text-sm text-gray-900">
                         {{ $feed->refreshed_at->diffForHumans() }}
-                        •
-                        <a href="{{ route('feeds.refresh', $feed->slug) }}"
-                            class="text-indigo-500 underline hover:text-indigo-900">refresh now
-                        </a>
+                        @if ($feed->canEdit())
+                            •
+                            <a href="{{ route('feeds.refresh', $feed->slug) }}"
+                                class="text-indigo-500 underline hover:text-indigo-900">refresh now
+                            </a>
+                        @endif
                     </dd>
                 </div>
                 <div class="sm:col-span-1">

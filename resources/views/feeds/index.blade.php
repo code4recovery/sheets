@@ -5,7 +5,7 @@
     <header>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between">
             <h1 class="text-3xl font-bold leading-tight text-gray-900">
-                Dashboard
+                My Feeds
             </h1>
             <a href="{{ route('feeds.create') }}"
                 class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -57,7 +57,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
-                                    @foreach ($feeds as $feed)
+                                    @foreach ($user->feeds as $feed)
 
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
