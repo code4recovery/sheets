@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Feed extends Model
 {
     use HasFactory;
+    protected $dates = ['refreshed_at'];
 }
