@@ -2,7 +2,7 @@
 
 As of 8/12/21, Google has begun deprecating `v3` of its Sheets API, which several AA services were using (Online Intergroup, TSML UI, Meeting Guide). Version 4 makes several changes, one of them being that requests require an API key.
 
-This service is intended to fill the gap between the new v4 of the Sheets API and Meeting Guide services.
+This service is intended to fill the gap between the new `v4` of the Sheets API and Meeting Guide services.
 
 1. users will sign up once at sheets.code4recovery.org (don’t do this now, not ready)
 1. they will register their feed with a name and sheet ID and it will return a URL
