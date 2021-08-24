@@ -26,13 +26,16 @@ Benefits of this system are:
 -   [x] Delete feeds
 -   [x] No feeds message
 -   [x] Mapbox key add-on to TSML UI embed code
+-   [x] Authenticate and send to intended URL
 -   [ ] Mobile view
 -   [ ] Sign out dropdown is wack
 -   [ ] Form validation
 -   [ ] Show import errors (e.g. duplicate slugs, invalid types)
--   [ ] Publish JSON from the Google Sheets add-on
--   [ ] Publish the add-on to the Google Workspace Marketplace
 -   [ ] Transfer feed ownership
 -   [ ] Localize in French and Spanish
--   [ ] Authenticate and send to intended URL
 -   [ ] Ability to view un-owned feeds?
+
+## Google Sheets add-on
+
+-   [ ] Publish JSON from the Google Sheets add-on
+-   [ ] Publish the add-on to the Google Workspace Marketplace
