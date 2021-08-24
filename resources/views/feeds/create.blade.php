@@ -26,8 +26,8 @@
 
             {!! Form::open(['route' => 'feeds.store']) !!}
 
-            <div class="grid gap-5">
-                <div class=" sm:col-span-4 grid gap-1">
+            <div class="grid gap-5 grid-cols-2">
+                <div class="sm:col-span-1 grid gap-1 content-start">
                     <label for="name" class="block text-sm font-medium text-gray-700">
                         Feed name
                     </label>
@@ -39,7 +39,7 @@
 ]) !!}
                 </div>
 
-                <div class="sm:col-span-4 grid gap-1">
+                <div class="sm:col-span-1 grid gap-1 content-start">
                     <label for="website" class="block text-sm font-medium text-gray-700">
                         Website URL
                     </label>
@@ -51,7 +51,7 @@
 ]) !!}
                 </div>
 
-                <div class="sm:col-span-4 grid gap-1">
+                <div class="grid gap-1 col-span-2">
                     <label for="sheet" class="block text-sm font-medium text-gray-700">
                         Sheet URL
                     </label>
@@ -68,7 +68,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 grid gap-1">
+                <div class="sm:col-span-1 grid gap-1 content-start">
                     <label for="timezone" class="block text-sm font-medium text-gray-700">
                         Default Timezone
                     </label>
@@ -81,6 +81,22 @@
                     </div>
                 </div>
 
+                <div class="sm:col-span-1 grid gap-1 content-start">
+                    <label for="mapbox" class="block text-sm font-medium text-gray-700">
+                        Mapbox Access Token
+                    </label>
+                    {!! Form::text('mapbox', old('mapbox'), [
+    'id' => 'mapbox',
+    'autocomplete' => 'off',
+    'placeholder' => 'e.g. pk.aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ',
+    'class' => 'shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md',
+]) !!}
+                    <p class="text-sm text-gray-400">
+                        Get a free one at <a href="https://mapbox.com" target="blank"
+                            class="text-indigo-500 underline hover:text-indigo-800">
+                            mapbox.com</a>.
+                    </p>
+                </div>
 
             </div>
 

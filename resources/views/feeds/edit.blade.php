@@ -26,8 +26,8 @@
 
             {!! Form::open(['route' => ['feeds.update', $feed->slug], 'method' => 'put']) !!}
 
-            <div class="grid gap-5">
-                <div class=" sm:col-span-4 grid gap-1">
+            <div class="grid gap-5 grid-cols-2">
+                <div class="sm:col-span-1 grid gap-1 content-start">
                     <label for="name" class="block text-sm font-medium text-gray-700">
                         Feed name
                     </label>
@@ -39,7 +39,7 @@
 ]) !!}
                 </div>
 
-                <div class=" sm:col-span-4 grid gap-1">
+                <div class="sm:col-span-1 grid gap-1 content-start">
                     <label for="name" class="block text-sm font-medium text-gray-700">
                         Slug
                     </label>
@@ -50,14 +50,14 @@
 ]) !!}
                     <p class="text-sm text-gray-400">
                         Changing this will change your feed address (currently
-                        <a class="font-mono text-xs hover:underline hover:text-gray-700"
+                        <a class="underline hover:text-indigo-800"
                             href="{{ env('APP_URL') }}/storage/{{ $feed->slug }}.json"
                             target="_blank">{{ env('APP_URL') }}/storage/{{ $feed->slug }}.json</a>).
                     </p>
 
                 </div>
 
-                <div class="sm:col-span-4 grid gap-1">
+                <div class="sm:col-span-1 grid gap-1 content-start">
                     <label for="website" class="block text-sm font-medium text-gray-700">
                         Website URL
                     </label>
@@ -69,7 +69,7 @@
 ]) !!}
                 </div>
 
-                <div class="sm:col-span-4 grid gap-1">
+                <div class="sm:col-span-1 grid gap-1 content-start">
                     <label for="sheet" class="block text-sm font-medium text-gray-700">
                         Sheet URL
                     </label>
@@ -86,7 +86,7 @@
                     </p>
                 </div>
 
-                <div class="sm:col-span-3 grid gap-1">
+                <div class="sm:col-span-1 grid gap-1 content-start">
                     <label for="timezone" class="block text-sm font-medium text-gray-700">
                         Default Timezone
                     </label>
@@ -99,10 +99,25 @@
                     </p>
                 </div>
 
-
+                <div class="sm:col-span-1 grid gap-1 content-start">
+                    <label for="mapbox" class="block text-sm font-medium text-gray-700">
+                        Mapbox Access Token
+                    </label>
+                    {!! Form::text('mapbox', old('mapbox', $feed->mapbox), [
+    'id' => 'mapbox',
+    'autocomplete' => 'off',
+    'placeholder' => 'e.g. pk.aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ',
+    'class' => 'shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md',
+]) !!}
+                    <p class="text-sm text-gray-400">
+                        Get a free one at <a href="https://mapbox.com" target="blank"
+                            class="text-indigo-500 underline hover:text-indigo-800">
+                            mapbox.com</a>.
+                    </p>
+                </div>
             </div>
 
-            <div class="flex justify-end pt-8">
+            <div class="flex justify-end pt-8 content-start">
                 <a href="{{ route('feeds.show', $feed->slug) }}"
                     class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Cancel

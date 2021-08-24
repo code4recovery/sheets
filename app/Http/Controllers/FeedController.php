@@ -64,6 +64,7 @@ class FeedController extends Controller
         $feed->slug = Str::slug($request->name);
         $feed->timezone = $request->timezone;
         $feed->website = $request->website;
+        $feed->mapbox = $request->mapbox;
         $feed->spreadsheet_id = $parts[5];
         $feed->sheet_id = substr($parts[6], 9);
 
@@ -98,17 +99,23 @@ class FeedController extends Controller
 
         $feed_url = env('APP_URL') . '/storage/' . $feed->slug . '.json';
 
+        $embed_code = [
+            '<div id="tsml-ui"',
+            '  data-src="' . $feed_url . '"',
+            '  data-timezone="' . $feed->timezone . '"',
+            '></div>',
+            '<script src="https://react.meetingguide.org/app.js"></script>',
+        ];
+
+        if ($feed->mapbox) {
+            array_splice($embed_code, 1, 0, '  data-mapbox="' . $feed->mapbox . '"');
+        }
+
         return view('feeds.show', [
             'user' => Auth::user(),
             'feed' => $feed,
             'feed_url' => $feed_url,
-            'embed_code' => implode("\n", [
-                '<div id="tsml-ui"',
-                '  data-src="' . $feed_url . '"',
-                '  data-timezone="' . $feed->timezone . '"',
-                '></div>',
-                '<script src="https://react.meetingguide.org/"></script>',
-            ]),
+            'embed_code' => $embed_code,
         ]);
     }
 
@@ -174,6 +181,7 @@ class FeedController extends Controller
 
         $feed->timezone = $request->timezone;
         $feed->website = $request->website;
+        $feed->mapbox = $request->mapbox;
         $feed->spreadsheet_id = $parts[5];
         $feed->sheet_id = substr($parts[6], 9);
         $feed->save();
@@ -191,11 +199,21 @@ class FeedController extends Controller
     {
         $feed = Feed::where(['slug' => $slug])->first();
 
+        //security
         if (!$feed->canEdit()) {
             return redirect()->route('feeds.index');
         }
 
+        //remove file
+        if (Storage::disk('public')->exists($feed->slug . '.json')) {
+            Storage::disk('public')->delete($feed->slug . '.json');
+        }
+
+        //delete records
+        $feed->users()->detach();
         $feed->delete();
+
+        return redirect()->route('feeds.index')->with('success', 'Feed deleted.');
     }
 
     public static function refresh($slug)

@@ -8,10 +8,17 @@
                 {{ $feed->name }}
             </h1>
             @if ($feed->canEdit())
-                <a href="{{ route('feeds.edit', $feed->slug) }}"
-                    class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Edit Feed
-                </a>
+                <div class="flex gap-4">
+                    {{ Form::open(['route' => ['feeds.destroy', $feed->slug], 'method' => 'delete']) }}
+                    <input type="submit"
+                        class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        value="Delete">
+                    {{ Form::close() }}
+                    <a href="{{ route('feeds.edit', $feed->slug) }}"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Edit Feed
+                    </a>
+                </div>
             @endif
         </div>
     </header>
@@ -95,14 +102,16 @@
                         TSML UI Embed Code
                     </dt>
                     <dd class="mt-1 text-sm text-gray-900">
-                        {!! Form::textarea('sample', $embed_code, [
+                        {!! Form::textarea('sample', implode("\n", $embed_code), [
     'class' => 'shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md font-mono bg-gray-100',
-    'rows' => 5,
+    'rows' => count($embed_code),
 ]) !!}
                     </dd>
                 </div>
             </dl>
-
+        </div>
+        <div class="max-w-7xl mx-auto sm:px-3 lg:px-5 grid gap-8 pt-4">
+            {!! implode("\n", $embed_code) !!}
         </div>
     </main>
 

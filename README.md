@@ -19,13 +19,18 @@ Benefits of this system are:
 
 ## Next steps
 
--   [x] Logging in with Google OAUTH
+-   [x] Logging in with Google OAuth
 -   [x] Create / edit feed listings
 -   [x] Refresh feeds
 -   [x] Security to restrict editing to feed owners
+-   [x] Delete feeds
+-   [x] No feeds message
+-   [x] Mapbox key add-on to TSML UI embed code
 -   [ ] Mobile view
--   [ ] Log of import errors (e.g. duplicate slugs, invalid types)
--   [ ] Publish JSON from the add-on
+-   [ ] Sign out dropdown is wack
+-   [ ] Form validation
+-   [ ] Show import errors (e.g. duplicate slugs, invalid types)
+-   [ ] Publish JSON from the Google Sheets add-on
 -   [ ] Publish the add-on to the Google Workspace Marketplace
 -   [ ] Transfer feed ownership
 -   [ ] Localize in French and Spanish
