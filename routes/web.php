@@ -59,7 +59,7 @@ Route::get('/auth/callback', function () {
     //log user in
     Auth::login($user);
 
-    return redirect()->route('feeds.index');
+    return redirect()->intended(route('feeds.index'));
 });
 
 Route::get('/logout', function (Request $request) {
