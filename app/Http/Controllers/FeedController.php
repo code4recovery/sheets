@@ -370,35 +370,53 @@ class FeedController extends Controller
             $row = array_map('trim', $row);
             $row = array_combine($columns, array_pad($row, $column_count, null));
 
-            if ($row['time']) {
+            if (!empty($row['time'])) {
                 $row['time'] = date('H:i', strtotime($row['time']));
             }
 
-            if ($row['end_time']) {
+            if (!empty($row['end_time'])) {
                 $row['end_time'] = date('H:i', strtotime($row['end_time']));
             }
 
-            if (in_array($row['day'], $days)) {
+            if (!empty($row['day']) && in_array($row['day'], $days)) {
                 $row['day'] = array_search($row['day'], $days);
             }
 
-            if ($row['types']) {
+            if (!empty($row['city']) && empty($row['formatted_address'])) {
+                $address = [$row['city']];
+                if (!empty($row['state'])) {
+                    if (!empty($row['postal_code'])) {
+                        array_push($address, $row['state'] . ' ' . $row['postal_code']);
+                    } else {
+                        array_push($address, $row['state']);
+                    }
+                }
+                if (!empty($row['address'])) {
+                    array_unshift($address, $row['address']);
+                }
+                if (!empty($row['country'])) {
+                    array_push($address, $row['country']);
+                }
+                $row['formatted_address'] = implode(', ', $address);
+            }
+
+            if (!empty($row['types'])) {
                 $row['types'] = explode(',', $row['types']);
                 $row['types'] = array_map('trim', $row['types']);
                 $row['types'] = array_map('htmlentities', $row['types']);
                 $row['types'] = array_values(array_filter($row['types'], function ($type) use ($types) {
-                    return array_key_exists($type, $types);
+                    return array_key_exists($type, $types) || in_array($type, $types);
                 }));
                 $row['types'] = array_map(function ($type) use ($types) {
-                    return $types[$type];
+                    return array_key_exists($type, $types) ? $types[$type] : $type;
                 }, $row['types']);
             }
 
-            if ($row['latitude']) {
+            if (!empty($row['latitude'])) {
                 $row['latitude'] = floatval($row['latitude']);
             }
 
-            if ($row['longitude']) {
+            if (!empty($row['longitude'])) {
                 $row['longitude'] = floatval($row['longitude']);
             }
 
