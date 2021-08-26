@@ -27,8 +27,8 @@ Benefits of this system are:
 -   [x] No feeds message
 -   [x] Mapbox key add-on to TSML UI embed code
 -   [x] Authenticate and send to intended URL
--   [ ] Mobile view
--   [ ] Sign out dropdown is wack
+-   [x] Mobile view
+-   [x] Sign out dropdown is wack
 -   [ ] Form validation
 -   [ ] Show import errors (e.g. duplicate slugs, invalid types)
 -   [ ] Transfer feed ownership

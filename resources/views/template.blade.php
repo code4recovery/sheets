@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Meeting Guide Sheets Import</title>
     <link rel="stylesheet" href="/css/app.css" />
-    <!-- <script src="/js/app.js" defer></script> -->
-    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="/js/app.js" defer></script>
 </head>
 
 <body>

@@ -14,7 +14,7 @@
         </div>
     </header>
     <main>
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-8 grid gap-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 grid gap-8">
 
             @if (session('error'))
                 <div class="bg-red-100 text-red-800 rounded p-4 shadow">
@@ -42,15 +42,15 @@
                                     Name
                                 </th>
                                 <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                                     Website
                                 </th>
                                 <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                                     Meetings
                                 </th>
                                 <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                                     Refreshed
                                 </th>
                                 <th scope="col" class="relative px-6 py-3">
@@ -60,7 +60,6 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach ($user->feeds as $feed)
-
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         <a href="{{ route('feeds.show', $feed->slug) }}"
@@ -68,16 +67,16 @@
                                             {{ $feed->name }}
                                         </a>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium hidden sm:table-cell">
                                         <a href="{{ $feed->website }}" target="_blank"
                                             class="text-indigo-600 hover:text-indigo-900">
                                             {{ $feed->website }}
                                         </a>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
                                         {{ number_format($feed->meetings) }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
                                         {{ $feed->refreshed_at->diffForHumans() }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

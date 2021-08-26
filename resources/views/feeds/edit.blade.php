@@ -10,7 +10,7 @@
         </div>
     </header>
     <main>
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid gap-8 pt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid gap-8 pt-8">
 
             @if (session('error'))
                 <div class="bg-red-100 text-red-800 rounded p-4 shadow">
