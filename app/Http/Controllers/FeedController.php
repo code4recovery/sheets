@@ -420,6 +420,28 @@ class FeedController extends Controller
                 $row['longitude'] = floatval($row['longitude']);
             }
 
+            //special zoom mode
+            if (!empty($row['zoom_id'])) {
+                $zoom_id = preg_replace('~\D~', '', $row['zoom_id']);
+                $row['conference_url'] = 'https://zoom.us/j/' . $zoom_id;
+                $row['conference_url_notes'] = 'Meeting ID: ' . $row['zoom_id'];
+                if (!empty($row['zoom_pw'])) {
+                    $row['conference_url'] .= '?pwd=' . $row['zoom_pw'];
+                    $row['conference_url_notes'] .= ' Password: ' . $row['zoom_pw'];
+
+                    if (is_numeric($row['zoom_pw'])) {
+                        $row['conference_phone'] = '+16699009128,,' . $zoom_id . '#,,#,,' . $row['zoom_pw'] . '#';
+                        $row['conference_phone_notes'] = 'Dial-In: (669) 900-9128 Enter Meeting ID: ' . $row['zoom_id'] . '# Password: ' . $row['zoom_pw'];
+                    } else {
+                        $row['conference_phone'] = '';
+                        $row['conference_phone_notes'] = '';
+                    }
+                } else {
+                    $row['conference_phone'] = '+16699009128,,' . $zoom_id . '#';
+                    $row['conference_phone_notes'] = 'Dial-In: (669) 900-9128 Enter Meeting ID: ' . $row['zoom_id'] . '#';
+                }
+            }
+
             $keys = array_filter(array_keys($row), function ($key)  use ($row, $fields) {
                 return in_array($key, $fields) && $row[$key] !== '';
             });
