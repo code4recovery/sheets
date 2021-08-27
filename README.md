@@ -29,6 +29,7 @@ Benefits of this system are:
 -   [x] Authenticate and send to intended URL
 -   [x] Mobile view
 -   [x] Sign out dropdown is wack
+-   [x] Zoom ID / PW column support
 -   [ ] Form validation
 -   [ ] Show import errors (e.g. duplicate slugs, invalid types)
 -   [ ] Transfer feed ownership
@@ -37,5 +38,7 @@ Benefits of this system are:
 
 ## Google Sheets add-on
 
+-   [ ] When editing multiple rows (eg by pasting) only the first updated date is changed
+-   [ ] Often hard to undo, unsure if related
 -   [ ] Publish JSON from the Google Sheets add-on
 -   [ ] Publish the add-on to the Google Workspace Marketplace
