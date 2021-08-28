@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FeedController;
+use App\Http\Controllers\UpdateController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +27,9 @@ Route::middleware('auth')->prefix('feeds')->name('feeds.')->group(function () {
     Route::delete('/{slug}', [FeedController::class, 'destroy'])->name('destroy');
     Route::get('/{slug}/refresh', [FeedController::class, 'refresh'])->name('refresh');
 });
+
+Route::get('/update/{feed}/{meeting}', [UpdateController::class, 'form'])->name('update.form');
+Route::post('/update/{feed}/{meeting}', [UpdateController::class, 'send'])->name('update.send');
 
 //todo move ot the API
 Route::post('publish', function (Request $request) {

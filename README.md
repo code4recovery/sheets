@@ -35,10 +35,12 @@ Benefits of this system are:
 -   [ ] Transfer feed ownership
 -   [ ] Localize in French and Spanish
 -   [ ] Ability to view un-owned feeds?
+-   [ ] See if refresh token can be used to stay logged in longer
 
 ## Google Sheets add-on
 
 -   [ ] When editing multiple rows (eg by pasting) only the first updated date is changed
--   [ ] Often hard to undo, unsure if related
--   [ ] Publish JSON from the Google Sheets add-on
+-   [ ] Sometimes hard to undo, unsure if related to onEdit effects
+-   [ ] Refresh JSON from the Google Sheets add-on
 -   [ ] Publish the add-on to the Google Workspace Marketplace
+-   [ ] Clear updated data when row is otherwise empty
