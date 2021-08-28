@@ -425,8 +425,12 @@ class FeedController extends Controller
                 $zoom_id = preg_replace('~\D~', '', $row['zoom_id']);
                 $row['conference_url'] = 'https://zoom.us/j/' . $zoom_id;
                 $row['conference_url_notes'] = 'Meeting ID: ' . $row['zoom_id'];
+
+                if (!empty($row['zoom_pw_hash'])) {
+                    $row['conference_url'] .= '?pwd=' . $row['zoom_pw_hash'];
+                }
+
                 if (!empty($row['zoom_pw'])) {
-                    $row['conference_url'] .= '?pwd=' . $row['zoom_pw'];
                     $row['conference_url_notes'] .= ' Password: ' . $row['zoom_pw'];
 
                     if (is_numeric($row['zoom_pw'])) {
