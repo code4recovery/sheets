@@ -432,15 +432,13 @@ class FeedController extends Controller
 
                 if (!empty($row['zoom_pw'])) {
                     $row['conference_url_notes'] .= ' Password: ' . $row['zoom_pw'];
+                }
 
-                    if (is_numeric($row['zoom_pw'])) {
-                        $row['conference_phone'] = '+16699009128,,' . $zoom_id . '#,,#,,' . $row['zoom_pw'] . '#';
-                        $row['conference_phone_notes'] = 'Dial-In: (669) 900-9128 Enter Meeting ID: ' . $row['zoom_id'] . '# Password: ' . $row['zoom_pw'];
-                    } else {
-                        $row['conference_phone'] = '';
-                        $row['conference_phone_notes'] = '';
-                    }
-                } else {
+                if (!empty($row['zoom_passcode']) && is_numeric($row['zoom_passcode'])) {
+                    $row['conference_phone'] = '+16699009128,,' . $zoom_id . '#,,#,,' . $row['zoom_passcode'] . '#';
+                    $row['conference_phone_notes'] = 'Dial-In: (669) 900-9128 Enter Meeting ID: ' . $row['zoom_id'] . '# Password: ' . $row['zoom_passcode'];
+                } elseif (empty($row['zoom_pw'])) {
+                    //none for either
                     $row['conference_phone'] = '+16699009128,,' . $zoom_id . '#';
                     $row['conference_phone_notes'] = 'Dial-In: (669) 900-9128 Enter Meeting ID: ' . $row['zoom_id'] . '#';
                 }
