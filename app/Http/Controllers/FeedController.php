@@ -286,6 +286,7 @@ class FeedController extends Controller
             'BA' => 'Babysitting Available',
             'B' => 'Big Book',
             'H' => 'Birthday',
+            'BI' => 'Bisexual',
             'BRK' => 'Breakfast',
             'CAN' => 'Candlelight',
             'CF' => 'Child-Friendly',
