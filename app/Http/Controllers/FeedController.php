@@ -411,6 +411,15 @@ class FeedController extends Controller
                 $row['types'] = array_map(function ($type) use ($types) {
                     return array_key_exists($type, $types) ? $types[$type] : $type;
                 }, $row['types']);
+
+                //7th tradition
+                $row['types'] = array_filter($row['types'], function ($type) {
+                    return $type !== 'DB';
+                });
+                if (!empty($row['venmo']) || !empty($row['paypal']) || !empty($row['square'])) {
+                    array_push($row['types'], 'DB');
+                }
+                $row['types'] = array_values($row['types']);
             }
 
             if (!empty($row['latitude'])) {
