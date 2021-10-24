@@ -426,6 +426,8 @@ class FeedController extends Controller
                         return $type !== 'SP';
                     });
                 }
+
+                $row['types'] = array_values($row['types']);
             }
 
             if (!empty($row['latitude'])) {
