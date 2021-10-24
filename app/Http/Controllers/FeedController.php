@@ -412,14 +412,20 @@ class FeedController extends Controller
                     return array_key_exists($type, $types) ? $types[$type] : $type;
                 }, $row['types']);
 
-                //7th tradition
+                //automatically apply "digital basket" type
                 $row['types'] = array_filter($row['types'], function ($type) {
                     return $type !== 'DB';
                 });
                 if (!empty($row['venmo']) || !empty($row['paypal']) || !empty($row['square'])) {
                     array_push($row['types'], 'DB');
                 }
-                $row['types'] = array_values($row['types']);
+
+                //either speaker or discussion
+                if (in_array('SP', $row['types']) && in_array('D', $row['types'])) {
+                    $row['types'] = array_filter($row['types'], function ($type) {
+                        return $type !== 'SP';
+                    });
+                }
             }
 
             if (!empty($row['latitude'])) {
