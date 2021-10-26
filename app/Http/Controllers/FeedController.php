@@ -362,9 +362,9 @@ class FeedController extends Controller
         $column_count = count($columns);
 
         //remove empty rows
-        $rows = array_filter($rows, function ($row) {
+        $rows = array_values(array_filter($rows, function ($row) {
             return count($row) && strlen($row[0]);
-        });
+        }));
 
         //loop through and format rows
         $rows = array_map(function ($row) use ($columns, $column_count, $fields, $days, $types) {
