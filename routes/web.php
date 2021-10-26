@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\UpdateController;
+use App\Models\Feed;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -71,6 +72,12 @@ Route::get('/logout', function (Request $request) {
     $request->session()->invalidate();
     $request->session()->regenerateToken();
     return redirect('/');
+});
+
+Route::get('aasanjose', function () {
+    $feed = Feed::where(['slug' => 'aasanjose'])->first();
+    FeedController::generate($feed->spreadsheet_id, $feed->slug);
+    echo 'done';
 });
 
 Route::get('oiaa', function () {

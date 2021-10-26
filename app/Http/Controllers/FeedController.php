@@ -363,7 +363,7 @@ class FeedController extends Controller
 
         //remove empty rows
         $rows = array_filter($rows, function ($row) {
-            return strlen($row[0]);
+            return count($row) && strlen($row[0]);
         });
 
         //loop through and format rows
