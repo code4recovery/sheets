@@ -1,17 +1,20 @@
 <?php
 
-use App\Http\Controllers\FeedController;
-use App\Http\Controllers\UpdateController;
-use App\Models\Feed;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+//use App\Http\Controllers\FeedController;
+//use App\Http\Controllers\UpdateController;
+//use App\Models\Feed;
+//use App\Models\User;
+//use Illuminate\Http\Request;
+//use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Laravel\Socialite\Facades\Socialite;
+//use Laravel\Socialite\Facades\Socialite;
 
+Route::view('/', 'welcome');
+
+/*
 Route::get('/', function () {
     return Auth::check() ?
         redirect()->route('feeds.index') :
@@ -79,6 +82,8 @@ Route::get('aasanjose', function () {
     FeedController::generate($feed->spreadsheet_id, $feed->slug);
     echo 'done';
 });
+
+*/
 
 Route::get('oiaa', function () {
 
