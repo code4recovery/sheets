@@ -78,10 +78,12 @@ Route::get('/logout', function (Request $request) {
 });
 */
 
-Route::get('aasanjose', function () {
+Route::get('aasanjose/{slug?}', function ($slug) {
     $feed = Feed::where(['slug' => 'aasanjose'])->first();
     FeedController::generate($feed->spreadsheet_id, $feed->slug);
-    echo 'done';
+    $url = 'https://aasanjose.org/meetings';
+    if ($slug) $url .= '?meeting=' . $slug;
+    return redirect($url);
 });
 
 Route::get('oiaa', function () {
