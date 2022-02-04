@@ -45,7 +45,8 @@ Route::get('oiaa', function () {
     return 'done!';
 });
 
-Route::get('{sheetId}/{slug?}', function ($sheetId, $redirectTo = false) {
+Route::get('{sheetId}', function ($sheetId, $redirectTo = false) {
+    $redirectTo = request('redirectTo');
     $feedUrl = generate($sheetId);
     return ($redirectTo) ? redirect($redirectTo) : view('done', compact('feedUrl'));
 });
