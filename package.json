@@ -10,14 +10,11 @@
         "production": "mix --production"
     },
     "devDependencies": {
+        "@tailwindcss/forms": "^0.4.0",
         "axios": "^0.21",
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
         "postcss": "^8.1.14",
-        "tailwindcss": "^2.2.7"
-    },
-    "dependencies": {
-        "@tailwindcss/forms": "^0.3.3",
-        "alpinejs": "^3.2.3"
+        "tailwindcss": "^3.0.18"
     }
 }
