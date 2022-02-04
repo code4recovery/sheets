@@ -1,46 +1,66 @@
-# Google Sheets Importer
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-As of 8/12/21, Google has begun deprecating `v3` of its Sheets API, which several AA services were using (Online Intergroup, TSML UI, Meeting Guide). Version 4 makes several changes, one of them being that requests require an API key.
+<p align="center">
+<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
-This service is intended to fill the gap between the new `v4` of the Sheets API and Meeting Guide services.
+## About Laravel
 
-1. users will sign up once at sheets.code4recovery.org (don’t do this now, not ready)
-1. they will register their feed with a name and sheet ID and it will return a URL
-1. they can then come back any time to refresh the feed
-1. there will be an optional Google Sheets add-on which will enable geocoding, slug generation, and basic data checking, as well as a dropdown menu item to “Publish Data" (register or refresh feed right from the sheet)
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-Benefits of this system are:
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
--   static JSON files, no database / cookies / processing
--   end user browsers don’t talk to Google
--   servants don’t need an API key
--   API keys not exposed to end users
--   waiting to publish allows servants to be in draft mode when editing the sheet
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Next steps
+## Learning Laravel
 
--   [x] Logging in with Google OAuth
--   [x] Create / edit feed listings
--   [x] Refresh feeds
--   [x] Security to restrict editing to feed owners
--   [x] Delete feeds
--   [x] No feeds message
--   [x] Mapbox key add-on to TSML UI embed code
--   [x] Authenticate and send to intended URL
--   [x] Mobile view
--   [x] Sign out dropdown is wack
--   [x] Zoom ID / PW column support
--   [ ] Form validation
--   [ ] Show import errors (e.g. duplicate slugs, invalid types)
--   [ ] Transfer feed ownership
--   [ ] Localize in French and Spanish
--   [ ] Ability to view un-owned feeds?
--   [ ] See if refresh token can be used to stay logged in longer
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-## Google Sheets add-on
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
--   [ ] When editing multiple rows (eg by pasting) only the first updated date is changed
--   [ ] Sometimes hard to undo, unsure if related to onEdit effects
--   [ ] Refresh JSON from the Google Sheets add-on
--   [ ] Publish the add-on to the Google Workspace Marketplace
--   [ ] Clear updated data when row is otherwise empty
+## Laravel Sponsors
+
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+
+### Premium Partners
+
+- **[Vehikl](https://vehikl.com/)**
+- **[Tighten Co.](https://tighten.co)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Cubet Techno Labs](https://cubettech.com)**
+- **[Cyber-Duck](https://cyber-duck.co.uk)**
+- **[Many](https://www.many.co.uk)**
+- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+- **[DevSquad](https://devsquad.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+- **[OP.GG](https://op.gg)**
+- **[CMS Max](https://www.cmsmax.com/)**
+- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
+- **[Lendio](https://lendio.com)**
+- **[Romega Software](https://romegasoftware.com)**
+
+## Contributing
+
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+
+## Code of Conduct
+
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+
+## Security Vulnerabilities
+
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+
+## License
+
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
