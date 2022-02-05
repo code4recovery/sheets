@@ -2,18 +2,16 @@
 
 @section('content')
 
-    <div class="flex min-h-screen bg-gray-100 items-center flex-col gap-2 justify-center">
-        <div class="max-w-md mx-auto my-5 grid gap-5 justify-items-center bg-white p-8 border rounded-sm">
-            <img src="/logo.png" width="400" height="400" class="block w-16 h-16">
-            <h1 class="font-bold text-xl">Google Sheet Importer</h1>
-            <div class="grid gap-3">
-                <p class="text-center">
-                    Great! Your feed has been refreshed at:
-                </p>
-                <input type="url" value="{{ $feedUrl }}" class="rounded">
-            </div>
-            <p>You can be redirected after refreshing by passing a <code>redirectTo</code> parameter to this URL.
-        </div>
-    </div>
+    <h1>
+        Feed Refreshed ✅
+    </h1>
+
+    <pre class="rounded bg-dark text-light p-3 mt-3 mb-4 overflow-scroll">{{ $feedUrl }}</pre>
+
+    <p>Bookmark this page so you don't need to fill out the form every time.</p>
+
+    <p>You can be redirected after refreshing by passing a <code>redirectTo</code> parameter to this URL.</p>
+
+    <p>Feeds that are not refreshed within 30 days will be removed automatically.</p>
 
 @endsection
