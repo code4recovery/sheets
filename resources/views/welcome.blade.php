@@ -1,7 +1,6 @@
 @extends('template')
 
 @section('content')
-
     <h1>{{ env('APP_NAME') }}</h1>
 
     <p class="lead">
@@ -12,7 +11,7 @@
         and/or <a href="https://tsml-ui.code4recovery.org" target="_blank">TSML UI</a>.
     </p>
 
-    <form method="post" action="/" class="d-flex flex-column">
+    <form method="post" action="/" class="d-flex flex-column mb-5">
         @csrf
         <label class="form-label fw-bold" for="sheetUrl">Google Sheet URL</label>
         <input type="url" name="sheetUrl" id="sheetUrl" class="form-control"
@@ -22,12 +21,18 @@
         </div>
     </form>
 
-    <p class="mt-5">
-        Need a place to start? Duplicate <a
-            href="https://docs.google.com/spreadsheets/d/12Ga8uwMG4WJ8pZ_SEU7vNETp_aQZ-2yNVsYDFqIwHyE/edit#gid=0">this
-            Google Sheet</a> that is the data source for <a href="https://aasanjose.org/meetings">AA San Jose's
-            meeting list</a>.
-    </p>
+    <h2 class="h3">Not sure where to start?</h2>
+    <ol>
+        <li>Open <a href="https://docs.google.com/spreadsheets/d/12Ga8uwMG4WJ8pZ_SEU7vNETp_aQZ-2yNVsYDFqIwHyE/edit#gid=0"
+                target="_blank">San
+                Jose's
+                Google Sheet</a>.</li>
+        <li>Sign into Google if you aren't already.</li>
+        <li>Make a copy at File > Make a copy</li>
+        <li>Fill in your own data.</li>
+        <li>Copy the URL of the sheet from the location bar</li>
+        <li>Paste it into the form above.</li>
+    </ol>
 
     <p class="mb-4">
         More information is available on the
@@ -41,5 +46,4 @@
             <img src="/logo.svg" width="100" height="100" alt="Code for Recovery" />
         </a>
     </p>
-
 @endsection
