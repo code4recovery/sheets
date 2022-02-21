@@ -47,8 +47,8 @@ Route::get('oiaa', function () {
 
 Route::get('{sheetId}', function ($sheetId, $redirectTo = false) {
     $redirectTo = request('redirectTo');
-    $feedUrl = generate($sheetId);
-    return ($redirectTo) ? redirect($redirectTo) : view('done', compact('feedUrl'));
+    list($feedUrl, $errors) = generate($sheetId);
+    return ($redirectTo) ? redirect($redirectTo) : view('done', compact('feedUrl', 'errors'));
 });
 
 function generate($sheetId)
@@ -85,7 +85,7 @@ function generate($sheetId)
         'longitude'
     ];
 
-    $types = array_flip([
+    $types = array_change_key_case(array_flip([
         '11' => '11th Step Meditation',
         '12x12' => '12 Steps & 12 Traditions',
         'ABSI' => 'As Bill Sees It',
@@ -144,7 +144,7 @@ function generate($sheetId)
         'XB' => 'Wheelchair-Accessible Bathroom',
         'W' => 'Women',
         'Y' => 'Young People',
-    ]);
+    ]));
 
     $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -161,34 +161,44 @@ function generate($sheetId)
 
     $rows = $response['values'];
 
+    $errors = [];
+
     //get columns
     $columns = array_map(function ($column) {
         return Str::slug($column, '_');
     }, array_shift($rows));
     $column_count = count($columns);
 
-    //remove empty rows
-    $rows = array_values(array_filter($rows, function ($row) {
-        return count($row) && strlen($row[0]);
-    }));
-
     //loop through and format rows
-    $rows = array_map(function ($row) use ($columns, $column_count, $fields, $days, $types) {
+    $rows = array_map(function ($row, $index) use ($columns, $column_count, $fields, $days, $types, &$errors) {
+
+        //skip empty row
+        if (!count($row) || !strlen($row[0])) {
+            return null;
+        }
+
+        //basic row fixup
         $row = array_map('trim', $row);
         $row = array_combine($columns, array_pad($row, $column_count, null));
 
-        if (!empty($row['time'])) {
-            $row['time'] = date('H:i', strtotime($row['time']));
+        //format "time" and "end_time" columns
+        foreach (['time', 'end_time'] as $col) {
+            if (!empty($row[$col])) {
+                $row[$col] = date('H:i', strtotime($row[$col]));
+            }
         }
 
-        if (!empty($row['end_time'])) {
-            $row['end_time'] = date('H:i', strtotime($row['end_time']));
+        //accept "id" as an alias for "slug"
+        if (empty($row['slug']) && !empty($row['id'])) {
+            $row['slug'] = $row['id'];
         }
 
+        //format "day" column
         if (!empty($row['day']) && in_array($row['day'], $days)) {
             $row['day'] = array_search($row['day'], $days);
         }
 
+        //create "formatted_address"
         if (!empty($row['city']) && empty($row['formatted_address'])) {
             $address = [$row['city']];
             if (!empty($row['state'])) {
@@ -207,15 +217,29 @@ function generate($sheetId)
             $row['formatted_address'] = implode(', ', $address);
         }
 
+        //handle types
         if (!empty($row['types'])) {
-            $row['types'] = explode(',', $row['types']);
+            $row['types'] = explode(',', trim($row['types']));
             $row['types'] = array_map('trim', $row['types']);
-            $row['types'] = array_map('htmlentities', $row['types']);
-            $row['types'] = array_values(array_filter($row['types'], function ($type) use ($types) {
-                return array_key_exists($type, $types) || in_array($type, $types);
+
+            $unknown_types = array_values(array_filter($row['types'], function ($type) use ($types) {
+                return !array_key_exists(strtolower($type), $types) && !in_array($type, $types);
             }));
+
+            if ($count = count($unknown_types)) {
+                $errors[] = [
+                    'index' => $index + 2,
+                    'error' => $count > 1 ? 'unknown types' : 'unknown type',
+                    'value' => $unknown_types
+                ];
+            }
+
+            $row['types'] = array_values(array_filter($row['types'], function ($type) use ($types) {
+                return array_key_exists(strtolower($type), $types) || in_array(strtoupper($type), $types);
+            }));
+
             $row['types'] = array_map(function ($type) use ($types) {
-                return array_key_exists($type, $types) ? $types[$type] : $type;
+                return array_key_exists(strtolower($type), $types) ? $types[strtolower($type)] : strtoupper($type);
             }, $row['types']);
 
             //automatically apply "digital basket" type
@@ -236,22 +260,25 @@ function generate($sheetId)
             $row['types'] = array_values($row['types']);
         }
 
-        if (!empty($row['latitude'])) {
-            $row['latitude'] = floatval($row['latitude']);
+        //format "latitude" and "longitude" columns
+        foreach (['latitude', 'longitude'] as $col) {
+            if (!empty($row[$col])) {
+                $row[$col] = floatval($row[$col]);
+            }
         }
 
-        if (!empty($row['longitude'])) {
-            $row['longitude'] = floatval($row['longitude']);
-        }
-
+        //remove unknown columns
         $keys = array_filter(array_keys($row), function ($key)  use ($row, $fields) {
-            return in_array($key, $fields) && $row[$key] !== '';
+            return in_array($key, $fields) && !in_array($row[$key], ['', null, []]);
         });
 
         return array_intersect_key($row, array_flip($keys));
-    }, $rows);
+    }, $rows, array_keys($rows));
+
+    //remove empty rows
+    $rows = array_filter($rows);
 
     Storage::disk('public')->put($sheetId . '.json', json_encode($rows));
 
-    return env('APP_URL') . '/storage/' . $sheetId . '.json';
+    return [env('APP_URL') . '/storage/' . $sheetId . '.json', $errors];
 }
