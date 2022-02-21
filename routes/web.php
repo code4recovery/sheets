@@ -267,9 +267,9 @@ function generate($sheetId)
             }
         }
 
-        //remove unknown columns
+        //remove unknown or empty columns
         $keys = array_filter(array_keys($row), function ($key)  use ($row, $fields) {
-            return in_array($key, $fields);
+            return in_array($key, $fields) && (!empty($row[$key]) || $row[$key] === 0);
         });
 
         return array_intersect_key($row, array_flip($keys));
