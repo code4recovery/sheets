@@ -269,7 +269,7 @@ function generate($sheetId)
 
         //remove unknown columns
         $keys = array_filter(array_keys($row), function ($key)  use ($row, $fields) {
-            return in_array($key, $fields) && !in_array($row[$key], ['', null, []]);
+            return in_array($key, $fields);
         });
 
         return array_intersect_key($row, array_flip($keys));
