@@ -4,9 +4,9 @@ This project makes it easy to use Google Sheets to to connect to Meeting Guide a
 
 ## Next Steps
 
--   [ ] home page update with link to san jose google sheet
+-   [x] home page update with link to san jose google sheet
+-   [x] warning for bad data
 -   [ ] screencast video
 -   [ ] embed TSML UI on confirmation page
 -   [ ] warning for bad url
 -   [ ] warning for inaccessible sheet
--   [ ] warning for bad data
