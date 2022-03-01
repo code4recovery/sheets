@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('cleanup')->daily();
+        $schedule->command('aasfmarin')->hourly();
     }
 
     /**
