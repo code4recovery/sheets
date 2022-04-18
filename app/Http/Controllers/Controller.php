@@ -120,7 +120,8 @@ class Controller extends BaseController
             'slug',
             'updated',
             'latitude',
-            'longitude'
+            'longitude',
+            'edit_url'
         ];
 
         //todo merge with $tsml_types
@@ -209,7 +210,7 @@ class Controller extends BaseController
         $column_count = count($columns);
 
         //loop through and format rows
-        $rows = array_map(function ($row, $index) use ($columns, $column_count, $fields, $days, $types, &$errors) {
+        $rows = array_map(function ($row, $index) use ($columns, $column_count, $fields, $days, $types, &$errors, $sheetId) {
 
             //skip empty row
             if (!count($row) || !strlen($row[0])) {
@@ -304,6 +305,11 @@ class Controller extends BaseController
                 if (!empty($row[$col])) {
                     $row[$col] = floatval($row[$col]);
                 }
+            }
+
+            //link to row
+            if (empty($row['edit_url'])) {
+                $row['edit_url'] = 'https://docs.google.com/spreadsheets/d/' . $sheetId . '/edit#gid=0&range=' . $index + 2 . ':' . $index + 2;
             }
 
             //remove unknown or empty columns
