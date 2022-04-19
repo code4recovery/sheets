@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+use Carbon\Carbon;
+
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -305,6 +307,11 @@ class Controller extends BaseController
                 if (!empty($row[$col])) {
                     $row[$col] = floatval($row[$col]);
                 }
+            }
+
+            //updated
+            if (!empty($row['updated'])) {
+                $row['updated'] = Carbon::parse($row['updated'])->toDateTimeString();
             }
 
             //link to row
