@@ -19,6 +19,9 @@ Route::get('aasfmarin', [AirtableController::class, 'aasfmarin']);
 
 Route::get('{sheetId}', function ($sheetId, $redirectTo = false) {
     $redirectTo = request('redirectTo');
-    list($feedUrl, $errors) = Controller::generate($sheetId);
-    return ($redirectTo) ? redirect($redirectTo) : view('done', compact('feedUrl', 'errors'));
+    $response = Controller::generate($sheetId);
+    if (!empty($response['error'])) {
+        return redirect()->back()->with('error', $response['error'])->with('sheetUrl', 'https://docs.google.com/spreadsheets/d/' . $sheetId . '/edit#gid=0');
+    }
+    return ($redirectTo) ? redirect($redirectTo) : view('done', $response);
 });
