@@ -199,7 +199,11 @@ class Controller extends BaseController
         );
 
         if (!$response->successful()) {
-            return ['status' => 'error'];
+            return $response;
+        }
+
+        if (empty($response['values'])) {
+            return ['error' => 'The sheet is empty'];
         }
 
         $rows = $response['values'];
@@ -210,6 +214,7 @@ class Controller extends BaseController
         $columns = array_map(function ($column) {
             return Str::slug($column, '_');
         }, array_shift($rows));
+
         $column_count = count($columns);
 
         //loop through and format rows
@@ -331,8 +336,12 @@ class Controller extends BaseController
         //remove empty rows
         $rows = array_filter($rows);
 
+        $created = Storage::disk('public')->exists($sheetId . '.json');
+
         Storage::disk('public')->put($sheetId . '.json', json_encode($rows));
 
-        return [env('APP_URL') . '/storage/' . $sheetId . '.json', $errors];
+        $feedUrl = env('APP_URL') . '/storage/' . $sheetId . '.json';
+
+        return compact('feedUrl', 'errors', 'created');
     }
 }
