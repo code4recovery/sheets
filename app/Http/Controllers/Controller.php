@@ -336,7 +336,7 @@ class Controller extends BaseController
         //remove empty rows
         $rows = array_filter($rows);
 
-        $created = Storage::disk('public')->exists($sheetId . '.json');
+        $created = !Storage::disk('public')->exists($sheetId . '.json');
 
         Storage::disk('public')->put($sheetId . '.json', json_encode($rows));
 
