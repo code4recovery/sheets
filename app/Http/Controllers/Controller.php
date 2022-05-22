@@ -221,7 +221,7 @@ class Controller extends BaseController
         $rows = array_map(function ($row, $index) use ($columns, $column_count, $fields, $days, $types, &$errors, $sheetId) {
 
             //skip empty row
-            if (!count($row) || !strlen($row[0])) {
+            if (!count($row) || !strlen(implode('', $row))) {
                 return null;
             }
 
@@ -334,7 +334,7 @@ class Controller extends BaseController
         }, $rows, array_keys($rows));
 
         //remove empty rows
-        $rows = array_filter($rows);
+        $rows = array_values(array_filter($rows));
 
         $created = !Storage::disk('public')->exists($sheetId . '.json');
 
