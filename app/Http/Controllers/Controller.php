@@ -124,6 +124,8 @@ class Controller extends BaseController
             'updated',
             'latitude',
             'longitude',
+            'approximate',
+            'coordinates',
             'edit_url'
         ];
 
