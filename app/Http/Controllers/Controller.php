@@ -95,38 +95,40 @@ class Controller extends BaseController
     public static function generate($sheetId)
     {
         $fields = [
-            'time',
-            'end_time',
-            'day',
-            'name',
-            'location',
-            'formatted_address',
-            'region',
-            'sub_region',
-            'types',
-            'notes',
-            'location_notes',
-            'group',
-            'district',
-            'sub_district',
-            'website',
-            'venmo',
-            'square',
-            'paypal',
-            'email',
-            'phone',
-            'group_notes',
-            'conference_url',
-            'conference_url_notes',
+            'approximate',
             'conference_phone',
             'conference_phone_notes',
-            'slug',
-            'updated',
-            'latitude',
-            'longitude',
-            'approximate',
+            'conference_url',
+            'conference_url_notes',
             'coordinates',
-            'edit_url'
+            'day',
+            'district',
+            'districts',
+            'edit_url',
+            'email',
+            'end_time',
+            'formatted_address',
+            'group',
+            'group_notes',
+            'latitude',
+            'location',
+            'location_notes',
+            'longitude',
+            'name',
+            'notes',
+            'paypal',
+            'phone',
+            'region',
+            'regions',
+            'slug',
+            'square',
+            'sub_district',
+            'sub_region',
+            'time',
+            'types',
+            'updated',
+            'venmo',
+            'website',
         ];
 
         //todo merge with $tsml_types
@@ -267,6 +269,20 @@ class Controller extends BaseController
                 $row['formatted_address'] = implode(', ', $address);
             }
 
+            //regions
+            if (!empty($row['regions'])) {
+                $row['regions'] = array_map('trim', explode('>', $row['regions']));
+                unset($row['region']);
+                unset($row['sub_region']);
+            }
+
+            //districts
+            if (!empty($row['districts'])) {
+                $row['districts'] = array_map('trim', explode('>', $row['districts']));
+                unset($row['district']);
+                unset($row['sub_district']);
+            }
+
             //handle types
             if (!empty($row['types'])) {
                 $row['types'] = explode(',', trim($row['types']));
@@ -319,7 +335,7 @@ class Controller extends BaseController
 
             //updated
             if (!empty($row['updated'])) {
-                $row['updated'] = Carbon::parse($row['updated'])->toDateTimeString();
+                $row['updated'] = Carbon::parse($row['updated'])->toDateString();
             }
 
             //link to row
