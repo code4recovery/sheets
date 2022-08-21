@@ -212,7 +212,7 @@ class Controller extends BaseController
 
         $rows = $response['values'];
 
-        $errors = [];
+        $slugs = $warnings = [];
 
         //get columns
         $columns = array_map(function ($column) {
@@ -220,9 +220,11 @@ class Controller extends BaseController
         }, array_shift($rows));
 
         $column_count = count($columns);
+        $types_column = self::getColumnFromNumber(array_search('types', $columns));
+        $slug_column = self::getColumnFromNumber(array_search('slug', $columns) ?: array_search('id', $columns));
 
         //loop through and format rows
-        $rows = array_map(function ($row, $index) use ($columns, $column_count, $fields, $days, $types, &$errors, $sheetId) {
+        $rows = array_map(function ($row, $index) use ($columns, $column_count, $fields, $days, $types, &$warnings, $sheetId, $types_column, &$slugs, $slug_column) {
 
             //skip empty row
             if (!count($row) || !strlen(implode('', $row))) {
@@ -244,6 +246,16 @@ class Controller extends BaseController
             if (empty($row['slug']) && !empty($row['id'])) {
                 $row['slug'] = $row['id'];
             }
+
+            //check for duplicate slugs
+            if (in_array($row['slug'], $slugs)) {
+                $warnings[] = [
+                    'link' => 'https://docs.google.com/spreadsheets/d/' . $sheetId . '/edit#gid=0&range=' . $slug_column . $index + 2,
+                    'error' => 'duplicate slug',
+                    'value' => [$row['slug']]
+                ];
+            }
+            $slugs[] = $row['slug'];
 
             //format "day" column
             if (!empty($row['day']) && in_array($row['day'], $days)) {
@@ -293,8 +305,8 @@ class Controller extends BaseController
                 }));
 
                 if ($count = count($unknown_types)) {
-                    $errors[] = [
-                        'index' => $index + 2,
+                    $warnings[] = [
+                        'link' => 'https://docs.google.com/spreadsheets/d/' . $sheetId . '/edit#gid=0&range=' . $types_column . $index + 2,
                         'error' => $count > 1 ? 'unknown types' : 'unknown type',
                         'value' => $unknown_types
                     ];
@@ -360,6 +372,18 @@ class Controller extends BaseController
 
         $feedUrl = env('APP_URL') . '/storage/' . $sheetId . '.json';
 
-        return compact('feedUrl', 'errors', 'created');
+        return compact('feedUrl', 'warnings', 'created');
+    }
+
+    private static function getColumnFromNumber($num)
+    {
+        $numeric = $num % 26;
+        $letter = chr(65 + $numeric);
+        $num2 = intval($num / 26);
+        if ($num2 > 0) {
+            return self::getColumnFromNumber($num2 - 1) . $letter;
+        } else {
+            return $letter;
+        }
     }
 }
