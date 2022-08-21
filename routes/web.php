@@ -23,5 +23,5 @@ Route::get('{sheetId}', function ($sheetId, $redirectTo = false) {
     if (!empty($response['error'])) {
         return redirect()->back()->with('error', $response['error'])->with('sheetUrl', 'https://docs.google.com/spreadsheets/d/' . $sheetId . '/edit#gid=0');
     }
-    return ($redirectTo) ? redirect($redirectTo) : view('done', $response);
+    return ($redirectTo && !count($response['warnings'])) ? redirect($redirectTo) : view('done', $response);
 });
