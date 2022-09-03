@@ -33,7 +33,8 @@ class OiaaController extends Controller
         $rows = array_map(function ($row) use ($columns, $column_count) {
             $row = array_map('trim', $row);
             extract(array_combine($columns, array_pad($row, $column_count, null)));
-            return compact('name', 'times', 'timezone', 'url', 'phone', 'access_code', 'email', 'types', 'formats', 'notes');
+            if ($meeting_id) $meeting_id -= 0;
+            return compact('name', 'times', 'timezone', 'url', 'phone', 'access_code', 'email', 'types', 'formats', 'notes', 'meeting_id');
         }, $rows);
 
         Storage::disk('public')->put('oiaa.json', json_encode($rows));
