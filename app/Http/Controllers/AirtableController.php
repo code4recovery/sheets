@@ -203,7 +203,8 @@ class AirtableController extends Controller
             $meetings[] = array_filter([
                 'slug' => self::getValue($row, 'slug'),
                 'name' => self::getValue($row, 'name'),
-                'time' => date('H:i', strtotime(self::getValue($row, 'time'))),
+                'time' => !empty($row->fields->time) ? date('H:i', strtotime($row->fields->time)) : null,
+                'end_time' => !empty($row->fields->source_End_Time) ? date('H:i', strtotime($row->fields->source_End_Time)) : null,
                 'day' => array_search(self::getValue($row, 'day'), $days),
                 'types' => array_unique($types),
                 'conference_url' => self::getValue($row, 'conference_url'),
