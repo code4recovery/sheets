@@ -19,6 +19,7 @@ class Controller extends BaseController
 
     static $tsml_conference_providers = [
         'bluejeans.com' => 'Bluejeans',
+        'discord.gg' => 'Discord',
         'freeconference.com' => 'Free Conference',
         'freeconferencecall.com' => 'FreeConferenceCall',
         'meet.google.com' => 'Google Hangouts',
