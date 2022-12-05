@@ -237,16 +237,19 @@ class Controller extends BaseController
             $row = array_map('trim', $row);
             $row = array_combine($columns, array_pad($row, $column_count, null));
 
-            //format "time" and "end_time" columns
-            foreach (['time', 'end_time'] as $col) {
-                if (!empty($row[$col])) {
-                    $row[$col] = date('H:i', strtotime($row[$col]));
+            //check that id/slug exists
+            if (empty($row['slug'])) {
+                //accept "id" as an alias for "slug"
+                if (!empty($row['id'])) {
+                    $row['slug'] = $row['id'];
+                } else {
+                    $warnings[] = [
+                        'link' => 'https://docs.google.com/spreadsheets/d/' . $sheetId . '/edit#gid=0&range=' . $slug_column . $index + 2,
+                        'error' => 'empty id or slug',
+                        'value' => ['Row ' . $index + 2]
+                    ];
+                    return null;
                 }
-            }
-
-            //accept "id" as an alias for "slug"
-            if (empty($row['slug']) && !empty($row['id'])) {
-                $row['slug'] = $row['id'];
             }
 
             //check for duplicate slugs
@@ -258,6 +261,13 @@ class Controller extends BaseController
                 ];
             }
             $slugs[] = $row['slug'];
+
+            //format "time" and "end_time" columns
+            foreach (['time', 'end_time'] as $col) {
+                if (!empty($row[$col])) {
+                    $row[$col] = date('H:i', strtotime($row[$col]));
+                }
+            }
 
             //format "day" column
             if (!empty($row['day']) && in_array($row['day'], $days)) {
