@@ -97,12 +97,15 @@ class Controller extends BaseController
     public static function generate($sheetId)
     {
         $fields = [
+            'address',
             'approximate',
+            'city',
             'conference_phone',
             'conference_phone_notes',
             'conference_url',
             'conference_url_notes',
             'coordinates',
+            'country',
             'day',
             'district',
             'districts',
@@ -120,10 +123,12 @@ class Controller extends BaseController
             'notes',
             'paypal',
             'phone',
+            'postal_code',
             'region',
             'regions',
             'slug',
             'square',
+            'state',
             'sub_district',
             'sub_region',
             'time',
@@ -274,24 +279,8 @@ class Controller extends BaseController
                 $row['day'] = array_search($row['day'], $days);
             }
 
-            //create "formatted_address"
-            if (!empty($row['city']) && empty($row['formatted_address'])) {
-                $address = [$row['city']];
-                if (!empty($row['state'])) {
-                    if (!empty($row['postal_code'])) {
-                        array_push($address, $row['state'] . ' ' . $row['postal_code']);
-                    } else {
-                        array_push($address, $row['state']);
-                    }
-                }
-                if (!empty($row['address'])) {
-                    array_unshift($address, $row['address']);
-                }
-                if (!empty($row['country'])) {
-                    array_push($address, $row['country']);
-                }
-                $row['formatted_address'] = implode(', ', $address);
-            }
+            //formatted_address
+
 
             //regions
             if (!empty($row['regions'])) {
