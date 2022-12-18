@@ -11,4 +11,5 @@ Did you know you can use scripting in your sheet to automate certain tasks? Chec
 -   ID/Slug generation
 -   Check for id/slug uniqueness
 -   Check for types validity
--   Automatic refresh-and-redirect link
+-   Refresh-and-redirect links
+-   Updated dates

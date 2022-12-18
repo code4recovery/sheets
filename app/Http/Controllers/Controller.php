@@ -329,13 +329,6 @@ class Controller extends BaseController
                     array_push($row['types'], 'DB');
                 }
 
-                //either speaker or discussion
-                if (in_array('SP', $row['types']) && in_array('D', $row['types'])) {
-                    $row['types'] = array_filter($row['types'], function ($type) {
-                        return $type !== 'SP';
-                    });
-                }
-
                 $row['types'] = array_values($row['types']);
             }
 
