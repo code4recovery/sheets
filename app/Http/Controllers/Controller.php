@@ -94,7 +94,7 @@ class Controller extends BaseController
         'Young People' => 'Y',
     ];
 
-    public static function generate($sheetId)
+    public static function fetch($sheetId)
     {
         $fields = [
             'address',
@@ -341,7 +341,16 @@ class Controller extends BaseController
 
             //updated
             if (!empty($row['updated'])) {
-                $row['updated'] = Carbon::parse($row['updated'])->toDateString();
+                try {
+                    $row['updated'] = Carbon::parse($row['updated'])->toDateString();
+                } catch (\Exception $e) {
+                    $row['updated'] = null;
+                    $warnings[] = [
+                        'link' => 'https://docs.google.com/spreadsheets/d/' . $sheetId . '/edit#gid=0&range=' . $slug_column . $index + 2,
+                        'error' => 'could not parse updated date',
+                        'value' => [$row['updated']]
+                    ];
+                }
             }
 
             //link to row
@@ -360,11 +369,17 @@ class Controller extends BaseController
         //remove empty rows
         $rows = array_values(array_filter($rows));
 
-        $created = !Storage::disk('public')->exists($sheetId . '.json');
+        return [$rows, $warnings];
+    }
 
-        Storage::disk('public')->put($sheetId . '.json', json_encode($rows));
+    public static function generate($rows, $warnings, $filename)
+    {
 
-        $feedUrl = env('APP_URL') . '/storage/' . $sheetId . '.json';
+        $created = !Storage::disk('public')->exists($filename);
+
+        Storage::disk('public')->put($filename, json_encode($rows));
+
+        $feedUrl = env('APP_URL') . '/storage/' . $filename;
 
         return compact('feedUrl', 'warnings', 'created');
     }
