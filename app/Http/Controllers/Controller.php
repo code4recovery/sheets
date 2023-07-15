@@ -134,6 +134,7 @@ class Controller extends BaseController
             'sub_district',
             'sub_region',
             'time',
+            'timezone',
             'types',
             'updated',
             'venmo',
@@ -274,6 +275,11 @@ class Controller extends BaseController
                 if (!empty($row[$col])) {
                     $row[$col] = date('H:i', strtotime($row[$col]));
                 }
+            }
+
+            //handle timezone
+            if (isset($row['timezone']) && !str_contains($row['timezone'], '/')) {
+                unset($row['timezone']);
             }
 
             //format "day" column
