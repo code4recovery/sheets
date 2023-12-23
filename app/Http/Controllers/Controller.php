@@ -13,6 +13,8 @@ use Illuminate\Support\Str;
 
 use Carbon\Carbon;
 
+use Code4Recovery\Spec;
+
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -32,83 +34,6 @@ class Controller extends BaseController
         'webex.com' => 'WebEx',
         'zoho.com' => 'Zoho',
         'zoom.us' => 'Zoom',
-    ];
-
-    static $tsml_types = [
-        '11th Step Meditation' => '11',
-        '12 Steps & 12 Traditions' => '12x12',
-        'American Sign Language' => 'ASL',
-        'Amharic' => 'AM',
-        'As Bill Sees It' => 'ABSI',
-        'Babysitting Available' => 'BA',
-        'Big Book' => 'B',
-        'Birthday' => 'H',
-        'Bisexual' => 'BI',
-        'Breakfast' => 'BRK',
-        'Candlelight' => 'CAN',
-        'Child-Friendly' => 'CF',
-        'Closed' => 'C',
-        'Concurrent with Al-Anon' => 'AL-AN',
-        'Concurrent with Alateen' => 'AL',
-        'Croatian' => 'HR',
-        'Cross Talk Permitted' => 'XT',
-        'Daily Reflections' => 'DR',
-        'Danish' => 'DA',
-        'Digital Basket' => 'DB',
-        'Discussion' => 'D',
-        'Dual Diagnosis' => 'DD',
-        'English' => 'EN',
-        'Fragrance Free' => 'FF',
-        'French' => 'FR',
-        'Gay' => 'G',
-        'German' => 'DE',
-        'Grapevine' => 'GR',
-        'Greek' => 'EL',
-        'Hebrew' => 'HE',
-        'Hindi' => 'HI',
-        'Hungarian' => 'HU',
-        'Indigenous' => 'NDG',
-        'Italian' => 'ITA',
-        'Japanese' => 'JA',
-        'Korean' => 'KOR',
-        'Lesbian' => 'L',
-        'LGBTQ' => 'LGBTQ',
-        'Literature' => 'LIT',
-        'Lithuanian' => 'LT',
-        'Living Sober' => 'LS',
-        'Location Temporarily Closed' => 'TC',
-        'Malayalam' => 'ML',
-        'Meditation' => 'MED',
-        'Men' => 'M',
-        'Native American' => 'N',
-        'Newcomer' => 'BE',
-        'Online' => 'ONL',
-        'Open' => 'O',
-        'Outdoor' => 'OUT',
-        'People of Color' => 'POC',
-        'Persian' => 'FA',
-        'Polish' => 'POL',
-        'Portuguese' => 'POR',
-        'Professionals' => 'P',
-        'Punjabi' => 'PUN',
-        'Russian' => 'RUS',
-        'Secular' => 'A',
-        'Seniors' => 'SEN',
-        'Slovak' => 'SK',
-        'Smoking Permitted' => 'SM',
-        'Spanish' => 'S',
-        'Speaker' => 'SP',
-        'Step Study' => 'ST',
-        'Swedish' => 'SV',
-        'Tagalog' => 'TL',
-        'Thai' => 'TH',
-        'Tradition Study' => 'TR',
-        'Transgender' => 'T',
-        'Ukrainian' => 'UK',
-        'Wheelchair Access' => 'X',
-        'Wheelchair-Accessible Bathroom' => 'XB',
-        'Women' => 'W',
-        'Young People' => 'Y',
     ];
 
     public static function fetch($sheetId)
@@ -156,7 +81,10 @@ class Controller extends BaseController
             'website',
         ];
 
-        $types = array_change_key_case(self::$tsml_types, CASE_LOWER);
+        $spec = new Spec();
+        $types = $spec->getTypesByLanguage('en');
+
+        $types = array_change_key_case($types, CASE_LOWER);
 
         $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
