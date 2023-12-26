@@ -83,6 +83,7 @@ class Controller extends BaseController
 
         $spec = new Spec();
         $types = $spec->getTypesByLanguage('en');
+        $types = array_flip($types);
 
         $types = array_change_key_case($types, CASE_LOWER);
 
@@ -91,8 +92,8 @@ class Controller extends BaseController
         //fetch data
         $response = Http::get(
             'https://sheets.googleapis.com/v4/spreadsheets/' .
-                $sheetId . '/values/A1:ZZ?key=' .
-                env('GOOGLE_SHEET_API_KEY')
+            $sheetId . '/values/A1:ZZ?key=' .
+            env('GOOGLE_SHEET_API_KEY')
         );
 
         if (!$response->successful()) {
@@ -250,7 +251,7 @@ class Controller extends BaseController
             }
 
             //remove unknown or empty columns
-            $keys = array_filter(array_keys($row), function ($key)  use ($row, $fields) {
+            $keys = array_filter(array_keys($row), function ($key) use ($row, $fields) {
                 return in_array($key, $fields) && (!empty($row[$key]) || $row[$key] === 0);
             });
 

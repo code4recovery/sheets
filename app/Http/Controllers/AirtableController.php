@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Code4Recovery\Spec;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Storage;
 
@@ -31,7 +32,8 @@ class AirtableController extends Controller
     {
 
         //set up a request handler
-        if (!$client) $client = new Client();
+        if (!$client)
+            $client = new Client();
 
         //set up curl request
         $response = $client->get(self::airtableUrl($table, $view, $offset), [
@@ -81,7 +83,7 @@ class AirtableController extends Controller
     //convert airtable format to meeting guide format
     static function convert($rows, $return_errors = false)
     {
-        $meetings = $errors = $new_conference_providers = [];
+        $meetings = $errors = [];
 
         $required_fields = ['name', 'day', 'time'];
 
@@ -89,8 +91,12 @@ class AirtableController extends Controller
 
         $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
+        $spec = new Spec();
+        $types = $spec->getTypesByLanguage('en');
+        $types = array_flip($types);
+
         //standard TSML types are defined in Controller.php
-        $values = array_merge(self::$tsml_types, [
+        $values = array_merge($types, [
             'Beginner' => 'BE',
             'Book Study' => 'LIT',
             'Chip Meeting' => 'H',
@@ -123,7 +129,8 @@ class AirtableController extends Controller
             //must have one of these fields
             $location = false;
             foreach ($location_fields as $field) {
-                if (!empty(self::getValue($row, $field))) $location = true;
+                if (!empty(self::getValue($row, $field)))
+                    $location = true;
             }
             if (!$location) {
                 $errors[] = [
@@ -240,8 +247,10 @@ class AirtableController extends Controller
     //airtable values can sometimes be an array
     static function getValue($row, $key, $default = null)
     {
-        if (empty($row->fields->{$key})) return $default;
-        if (is_array($row->fields->{$key})) return trim($row->fields->{$key}[0]);
+        if (empty($row->fields->{$key}))
+            return $default;
+        if (is_array($row->fields->{$key}))
+            return trim($row->fields->{$key}[0]);
         return trim($row->fields->{$key});
     }
 }
