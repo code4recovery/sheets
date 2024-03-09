@@ -4,38 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class OiaaController extends Controller
 {
-    //regenerate oiaa feed
+    // regenerate oiaa feed
     public static function oiaa()
     {
-        //fetch data
-        $rows = Http::get(
-            'https://sheets.googleapis.com/v4/spreadsheets/' .
-                env('GOOGLE_SHEET_ID') . '/values/A1:Z10000?key=' .
-                env('GOOGLE_SHEET_API_KEY')
-        )['values'];
+        $response = Http::get(env('OIAA_FEED_URL'));
 
-        //get columns
-        $columns = array_map(function ($column) {
-            return Str::slug($column, '_');
-        }, array_shift($rows));
-        $column_count = count($columns);
+        if ($response->failed()) {
+            return 'failed!';
+        }
 
-        //remove empty rows
-        $rows = array_filter($rows, function ($row) {
-            return is_array($row) && count($row) && strlen($row[0]);
-        });
+        $rows = $response->json();
 
-        //loop through and format rows
-        $rows = array_map(function ($row) use ($columns, $column_count) {
-            $row = array_map('trim', $row);
-            extract(array_combine($columns, array_pad($row, $column_count, null)));
-            if ($meeting_id) $meeting_id -= 0;
-            return compact('name', 'times', 'timezone', 'url', 'phone', 'access_code', 'email', 'types', 'formats', 'notes', 'meeting_id');
-        }, $rows);
+        if (!count($rows)) {
+            return 'empty!';
+        }
 
         Storage::disk('public')->put('oiaa.json', json_encode($rows));
 

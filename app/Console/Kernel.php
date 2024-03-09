@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('cleanup')->daily();
         $schedule->command('aasfmarin')->hourly();
+        $schedule->command('oiaa')->everyFifteenMinutes();
     }
 
     /**
