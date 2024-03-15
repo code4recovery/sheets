@@ -32,7 +32,11 @@ Route::get('puget-sound', function () {
 
 Route::get('{sheetId}', function ($sheetId, $redirectTo = false) {
     $redirectTo = request('redirectTo');
-    list($rows, $warnings) = Controller::fetch($sheetId);
+    $response = Controller::fetch($sheetId);
+    if (!empty($response['error'])) {
+        return redirect()->back()->with('error', $response['error'])->with('sheetUrl', 'https://docs.google.com/spreadsheets/d/' . $sheetId . '/edit#gid=0');
+    }
+    list ($rows, $warnings) = $response;
     $response = Controller::generate($rows, $warnings, $sheetId . '.json');
     if (!empty($response['error'])) {
         return redirect()->back()->with('error', $response['error'])->with('sheetUrl', 'https://docs.google.com/spreadsheets/d/' . $sheetId . '/edit#gid=0');
