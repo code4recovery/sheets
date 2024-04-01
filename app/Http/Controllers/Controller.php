@@ -188,12 +188,12 @@ class Controller extends BaseController
             //regions
             if (!empty($row['regions'])) {
                 $row['regions'] = array_map('trim', explode('>', $row['regions']));
-                if ($row['regions'][0]) {
+                if (!empty($row['regions'][0])) {
                     $row['region'] = $row['regions'][0];
                 } else {
                     unset($row['region']);
                 }
-                if ($row['regions'][1]) {
+                if (!empty($row['regions'][1])) {
                     $row['sub_region'] = $row['regions'][1];
                 } else {
                     unset($row['sub_region']);
