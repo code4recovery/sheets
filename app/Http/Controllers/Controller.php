@@ -17,9 +17,11 @@ use Code4Recovery\Spec;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests;
+    use DispatchesJobs;
+    use ValidatesRequests;
 
-    static $tsml_conference_providers = [
+    public static $tsml_conference_providers = [
         'bluejeans.com' => 'Bluejeans',
         'discord.gg' => 'Discord',
         'freeconference.com' => 'Free Conference',
@@ -153,6 +155,11 @@ class Controller extends BaseController
                     ];
                     return null;
                 }
+            }
+
+            //check that name exists
+            if (empty($row['name'])) {
+                return null;
             }
 
             //check for duplicate slugs
