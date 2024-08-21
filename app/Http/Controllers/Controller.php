@@ -102,7 +102,7 @@ class Controller extends BaseController
 
         $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-        //fetch data
+        // fetch data
         $response = Http::get(
             'https://sheets.googleapis.com/v4/spreadsheets/' .
             $sheetId . '/values/A1:ZZ?key=' .
@@ -121,30 +121,39 @@ class Controller extends BaseController
 
         $slugs = $warnings = [];
 
-        //get columns
+        // get columns
         $columns = array_map(function ($column) {
             return Str::slug($column, '_');
         }, array_shift($rows));
+
+        // validate columns
+        if (empty($columns)) {
+            return ['error' => 'The sheet is empty'];
+        } elseif (!in_array('slug', $columns) && !in_array('id', $columns)) {
+            return ['error' => 'The sheet is missing a "slug" or "id" column'];
+        } elseif (!in_array('name', $columns)) {
+            return ['error' => 'The sheet is missing a "slug" or "id" column'];
+        }
 
         $column_count = count($columns);
         $types_column = self::getColumnFromNumber(array_search('types', $columns));
         $slug_column = self::getColumnFromNumber(array_search('slug', $columns) ?: array_search('id', $columns));
 
-        //loop through and format rows
+        // loop through and format rows
         $rows = array_map(function ($row, $index) use ($columns, $column_count, $fields, $days, $types, &$warnings, $sheetId, $types_column, &$slugs, $slug_column) {
 
-            //skip empty row
+            // skip empty row
             if (!count($row) || !strlen(implode('', $row))) {
                 return null;
             }
 
-            //basic row fixup
+            // basic row fixup
             $row = array_map('trim', $row);
             $row = array_combine($columns, array_pad($row, $column_count, null));
 
-            //check that id/slug exists
+            // check that id/slug exists
             if (empty($row['slug'])) {
-                //accept "id" as an alias for "slug"
+                // accept "id" as an alias for "slug"
                 if (!empty($row['id'])) {
                     $row['slug'] = $row['id'];
                 } else {
@@ -157,12 +166,12 @@ class Controller extends BaseController
                 }
             }
 
-            //check that name exists
+            // check that name exists
             if (empty($row['name'])) {
                 return null;
             }
 
-            //check for duplicate slugs
+            // check for duplicate slugs
             if (in_array($row['slug'], $slugs)) {
                 $warnings[] = [
                     'link' => 'https://docs.google.com/spreadsheets/d/' . $sheetId . '/edit#gid=0&range=' . $slug_column . $index + 2,
@@ -172,27 +181,27 @@ class Controller extends BaseController
             }
             $slugs[] = $row['slug'];
 
-            //format "time" and "end_time" columns
+            // format "time" and "end_time" columns
             foreach (['time', 'end_time'] as $col) {
                 if (!empty($row[$col])) {
                     $row[$col] = date('H:i', strtotime($row[$col]));
                 }
             }
 
-            //handle timezone
+            // handle timezone
             if (isset($row['timezone']) && !str_contains($row['timezone'], '/')) {
                 unset($row['timezone']);
             }
 
-            //format "day" column
+            // format "day" column
             if (!empty($row['day']) && in_array($row['day'], $days)) {
                 $row['day'] = array_search($row['day'], $days);
             }
 
-            //formatted_address
+            // formatted_address
 
 
-            //regions
+            // regions
             if (!empty($row['regions'])) {
                 $row['regions'] = array_map('trim', explode('>', $row['regions']));
                 if (!empty($row['regions'][0])) {
@@ -207,14 +216,14 @@ class Controller extends BaseController
                 }
             }
 
-            //districts
+            // districts
             if (!empty($row['districts'])) {
                 $row['districts'] = array_map('trim', explode('>', $row['districts']));
                 unset($row['district']);
                 unset($row['sub_district']);
             }
 
-            //handle types
+            // handle types
             if (!empty($row['types'])) {
                 $row['types'] = explode(',', trim($row['types']));
                 $row['types'] = array_map('trim', $row['types']);
@@ -239,7 +248,7 @@ class Controller extends BaseController
                     return array_key_exists(strtolower($type), $types) ? $types[strtolower($type)] : strtoupper($type);
                 }, $row['types']);
 
-                //automatically apply "digital basket" type
+                // automatically apply "digital basket" type
                 $row['types'] = array_filter($row['types'], function ($type) {
                     return $type !== 'DB';
                 });
@@ -250,14 +259,14 @@ class Controller extends BaseController
                 $row['types'] = array_values($row['types']);
             }
 
-            //format "latitude" and "longitude" columns
+            // format "latitude" and "longitude" columns
             foreach (['latitude', 'longitude'] as $col) {
                 if (!empty($row[$col])) {
                     $row[$col] = floatval($row[$col]);
                 }
             }
 
-            //updated
+            // updated
             if (!empty($row['updated'])) {
                 try {
                     $row['updated'] = Carbon::parse($row['updated'])->toDateString();
@@ -271,12 +280,12 @@ class Controller extends BaseController
                 }
             }
 
-            //link to row
+            // link to row
             if (empty($row['edit_url'])) {
                 $row['edit_url'] = 'https://docs.google.com/spreadsheets/d/' . $sheetId . '/edit#gid=0&range=' . $index + 2 . ':' . $index + 2;
             }
 
-            //remove unknown or empty columns
+            // remove unknown or empty columns
             $keys = array_filter(array_keys($row), function ($key) use ($row, $fields) {
                 return in_array($key, $fields) && (!empty($row[$key]) || $row[$key] === 0);
             });
@@ -284,7 +293,7 @@ class Controller extends BaseController
             return array_intersect_key($row, array_flip($keys));
         }, $rows, array_keys($rows));
 
-        //remove empty rows
+        // remove empty rows
         $rows = array_values(array_filter($rows));
 
         return [$rows, $warnings];
