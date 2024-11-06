@@ -12,7 +12,7 @@ Route::post('/', function () {
     if (count($parts) !== 7) {
         return redirect()->back();
     }
-    return redirect('/' . $parts[5]);
+    return redirect("/$parts[5]");
 });
 
 Route::get('oiaa', [OiaaController::class, 'oiaa']);
