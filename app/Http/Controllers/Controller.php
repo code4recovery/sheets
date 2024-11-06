@@ -138,9 +138,10 @@ class Controller extends BaseController
         $column_count = count($columns);
         $types_column = self::getColumnFromNumber(array_search('types', $columns));
         $slug_column = self::getColumnFromNumber(array_search('slug', $columns) ?: array_search('id', $columns));
+        $name_column = self::getColumnFromNumber(array_search('name', $columns));
 
         // loop through and format rows
-        $rows = array_map(function ($row, $index) use ($columns, $column_count, $fields, $days, $types, &$warnings, $sheetId, $types_column, &$slugs, $slug_column) {
+        $rows = array_map(function ($row, $index) use ($columns, $column_count, $fields, $days, $types, &$warnings, $sheetId, $types_column, &$slugs, $slug_column, $name_column) {
 
             // skip empty row
             if (!count($row) || !strlen(implode('', $row))) {
@@ -168,6 +169,11 @@ class Controller extends BaseController
 
             // check that name exists
             if (empty($row['name'])) {
+                $warnings[] = [
+                    'link' => 'https://docs.google.com/spreadsheets/d/' . $sheetId . '/edit#gid=0&range=' . $name_column . $index + 2,
+                    'error' => 'empty name',
+                    'value' => ['Row ' . $index + 2]
+                ];
                 return null;
             }
 
