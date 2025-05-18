@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Code4Recovery\Spec;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AirtableController extends Controller
 {
@@ -78,6 +79,20 @@ class AirtableController extends Controller
         }
 
         return $url;
+    }
+
+    private static function fixPayPal($paypal)
+    {
+        $prefixes = ['https://paypal.me/paypal.me/', 'https://paypal.me/'];
+        foreach ($prefixes as $prefix) {
+            if ($paypal && Str::startsWith($paypal, $prefix)) {
+                return substr($paypal, strlen($prefix));
+            }
+        }
+        if ($paypal === 'paypal.me/BND7thtradition') {
+            dd($paypal);
+        }
+        return $paypal;
     }
 
     //convert airtable format to meeting guide format
@@ -220,7 +235,7 @@ class AirtableController extends Controller
                 'conference_phone_notes' => self::getValue($row, 'conference_phone_notes'),
                 'square' => self::getValue($row, 'square'),
                 'venmo' => self::getValue($row, 'venmo'),
-                'paypal' => self::getValue($row, 'paypal'),
+                'paypal' => self::fixPayPal(self::getValue($row, 'paypal')),
                 'notes' => self::getValue($row, 'notes'),
                 'location' => self::getValue($row, 'location'),
                 'address' => self::getValue($row, 'address'),
