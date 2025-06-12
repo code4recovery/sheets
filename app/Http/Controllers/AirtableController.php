@@ -211,7 +211,6 @@ class AirtableController extends Controller
                         return stripos($conference_url['host'], $domain) !== false;
                     });
                     if (!count($matches)) {
-                        $new_conference_providers[] = $conference_url['host'];
                         $errors[] = [
                             'url' => $url,
                             'name' => self::getValue($row, 'name'),
@@ -220,6 +219,17 @@ class AirtableController extends Controller
                         ];
                     }
                 }
+            }
+
+            // format notes with group service number (temporarily, until we have a field in the spec)
+            $notes = self::getValue($row, 'notes');
+            $gso_id = self::getValue($row, 'GSO_ID');
+            if (!empty($gso_id) && is_numeric($gso_id)) {
+                $gso_id = str_pad($gso_id, 9, '0', STR_PAD_LEFT);
+                if ($notes) {
+                    $notes .= "\n\n";
+                }
+                $notes .= "Group Service Number: $gso_id";
             }
 
             $meetings[] = array_filter([
@@ -236,7 +246,7 @@ class AirtableController extends Controller
                 'square' => self::getValue($row, 'square'),
                 'venmo' => self::getValue($row, 'venmo'),
                 'paypal' => self::fixPayPal(self::getValue($row, 'paypal')),
-                'notes' => self::getValue($row, 'notes'),
+                'notes' => $notes,
                 'location' => self::getValue($row, 'location'),
                 'address' => self::getValue($row, 'address'),
                 'city' => self::getValue($row, 'city'),
