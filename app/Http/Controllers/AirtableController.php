@@ -260,7 +260,7 @@ class AirtableController extends Controller
                 'feedback_url' => self::getValue($row, 'feedback_url'),
                 'latitude' => self::getValue($row, 'latitude'),
                 'longitude' => self::getValue($row, 'longitude'),
-                'url' => 'https://aasfmarin.org/meetings?meeting=' . self::getValue($row, 'slug'),
+                'url' => 'https://aasfmarin.org/find-a-meeting?meeting=' . self::getValue($row, 'slug'),
             ], function ($value) {
                 return $value !== null;
             });
